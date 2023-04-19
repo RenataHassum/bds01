@@ -1,6 +1,7 @@
 package com.devsuperior.bds01.services;
 
 import com.devsuperior.bds01.dto.EmployeeDTO;
+import com.devsuperior.bds01.entities.Department;
 import com.devsuperior.bds01.entities.Employee;
 import com.devsuperior.bds01.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +20,15 @@ public class EmployeeService {
     public Page<EmployeeDTO> findAllPaged(Pageable pageable) {
         Page<Employee> page = repository.findAll(pageable);
         return page.map(emp -> new EmployeeDTO(emp));
+    }
+
+    @Transactional
+    public EmployeeDTO insert(EmployeeDTO dto) {
+        Employee entity = new Employee();
+        entity.setName(dto.getName());
+        entity.setEmail(dto.getEmail());
+        entity.setDepartment(new Department(dto.getDepartmentId(), null));
+        entity = repository.save(entity);
+        return new EmployeeDTO(entity);
     }
 }
